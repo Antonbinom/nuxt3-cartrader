@@ -2,11 +2,11 @@
   <div>
     <CarHero />
   </div>
-</template>\
+</template>
+\
 
 <script setup>
 useHead({
-  title: 'Cartrader'
-})
-
+  title: "Cartrader",
+});
 </script>
