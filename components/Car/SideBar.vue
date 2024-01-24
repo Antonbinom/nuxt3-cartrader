@@ -25,7 +25,7 @@
     <div class="p-5 flex justify-between relative cursor-pointer border-b">
       <h3>Make</h3>
       <h3 @click="updateModal('make')" class="text-blue-400 capitalize ml-2">
-        {{ route.params.make || "Any" }}
+        {{ route.params.make || route.query.make || "Any" }}
       </h3>
       <div
         v-if="modal.make"
@@ -102,6 +102,17 @@ const priceRange = ref({
   min: "",
   max: "",
 });
+
+const getRouteQueryParams = () => {
+  const { make, minPrice, maxPrice } = route.query;
+
+  return {
+    make,
+    minPrice,
+    maxPrice,
+  };
+};
+
 const updateModal = (key) => {
   modal.value[key] = !modal.value[key];
 };
@@ -120,13 +131,22 @@ const onChangeLocation = () => {
 };
 
 const onChangeMake = (make) => {
-  navigateTo(`/city/${route.params.city}/car/${make}`);
+  const { minPrice, maxPrice } = getRouteQueryParams();
+  const query = {};
+  make && (query.make = make);
+  minPrice && (query.minPrice = minPrice);
+  maxPrice && (query.maxPrice = maxPrice);
+
+  router.push({ query });
+
   updateModal("make");
 };
 
 const onChangePrice = () => {
   updateModal("price");
   const query = {};
+  const { make } = getRouteQueryParams();
+  make && (query.make = make);
 
   if (priceRange.value.min) query.minPrice = priceRange.value.min;
   if (priceRange.value.max) query.maxPrice = priceRange.value.max;
