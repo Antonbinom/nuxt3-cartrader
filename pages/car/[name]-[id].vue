@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CarDetailsHero :car="car" />
+    <CarDetailsHero v-if="car" :car="car" />
     <CarDetailsAttribute :features="car.features" />
     <CarDetailsDescription :description="car.description" />
     <CarDetailsContact />
@@ -8,9 +8,8 @@
 </template>
 
 <script setup>
-const { toTitleCase } = useUtils();
 const route = useRoute();
-const { cars } = useCars();
+const { toTitleCase } = useUtils();
 
 definePageMeta({
   layout: "custom",
@@ -19,14 +18,5 @@ useHead({
   title: toTitleCase(route.params.name),
 });
 
-const car = computed(() => {
-  return cars.find((c) => c.id === parseInt(route.params.id));
-});
-
-if (!car.value) {
-  throw createError({
-    statusCode: 404,
-    message: `Car with ID of ${route.params.id} does not exist`,
-  });
-}
+const { data: car } = await useFetchCar(route.params.id);
 </script>

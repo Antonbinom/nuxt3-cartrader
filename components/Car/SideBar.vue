@@ -2,10 +2,7 @@
   <div class="shadow border w-64 mr-10 z-30 h-[190px] min-w-fit">
     <div class="p-5 flex justify-between relative cursor-pointer border-b">
       <h3>Location</h3>
-      <h3
-        @click="updateModal('location')"
-        class="text-blue-400 capitalize ml-2"
-      >
+      <h3 @click="openModal('location')" class="text-blue-400 capitalize ml-2">
         {{ route.params.city }}
       </h3>
       <div
@@ -24,7 +21,7 @@
 
     <div class="p-5 flex justify-between relative cursor-pointer border-b">
       <h3>Make</h3>
-      <h3 @click="updateModal('make')" class="text-blue-400 capitalize ml-2">
+      <h3 @click="openModal('make')" class="text-blue-400 capitalize ml-2">
         {{ route.params.make || route.query.make || "Any" }}
       </h3>
       <div
@@ -44,7 +41,7 @@
 
     <div class="p-5 flex justify-between relative cursor-pointer border-b">
       <h3>Price</h3>
-      <h3 @click="updateModal('price')" class="text-blue-400 capitalize ml-2">
+      <h3 @click="openModal('price')" class="text-blue-400 capitalize ml-2">
         {{ priceRangeText }}
       </h3>
       <div
@@ -113,8 +110,17 @@ const getRouteQueryParams = () => {
   };
 };
 
-const updateModal = (key) => {
-  modal.value[key] = !modal.value[key];
+const openModal = (key) => {
+  modal.value = {
+    location: false,
+    make: false,
+    price: false,
+  };
+  modal.value[key] = true;
+};
+
+const closeModal = (key) => {
+  modal.value[key] = false;
 };
 
 const onChangeLocation = () => {
@@ -125,7 +131,7 @@ const onChangeLocation = () => {
       message: "Invalid city format",
     });
   }
-  updateModal("location");
+  closeModal("location");
   navigateTo(`/city/${city.value}/car/${route.params.make}`);
   city.value = "";
 };
@@ -139,11 +145,12 @@ const onChangeMake = (make) => {
 
   router.push({ query });
 
-  updateModal("make");
+  closeModal("make");
 };
 
 const onChangePrice = () => {
-  updateModal("price");
+  closeModal("price");
+
   const query = {};
   const { make } = getRouteQueryParams();
   make && (query.make = make);

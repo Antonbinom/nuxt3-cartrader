@@ -7,17 +7,23 @@
 
 <script setup>
 const route = useRoute();
-const { data: cars } = useFetchCars(route.params.city, {
-  make: route.query.make,
-  minPrice: route.query.minPrice,
-  maxPrice: route.query.maxPrice,
-  city: route.params.city,
-});
+
+const getCars = () => {
+  const { data } = useFetchCars(route.params.city, {
+    make: route.query.make,
+    minPrice: route.query.minPrice,
+    maxPrice: route.query.maxPrice,
+    city: route.params.city,
+  });
+  return data;
+};
+
+let cars = getCars();
 
 watch(
   () => route.query,
   () => {
-    window.location.reload(true);
+    cars = getCars();
   }
 );
 </script>
