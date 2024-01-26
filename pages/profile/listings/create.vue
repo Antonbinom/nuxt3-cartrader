@@ -15,6 +15,8 @@
         :key="input.id"
         :title="input.title"
         :placeholder="input.placeholder"
+        :name="input.name"
+        @change-input="onChangeInput"
       />
       <CarAdTextarea
         title="Description *"
@@ -22,7 +24,22 @@
         name="description"
         @change-input="onChangeInput"
       />
-      <CarAdImage />
+      <CarAdImage @change-input="onChangeInput" />
+      <div>
+        <button
+          @click="handleSubmit"
+          :disabled="isSubmitDisabled"
+          class="text-white rounded py-2 px-7 mt-7"
+          :class="
+            isSubmitDisabled
+              ? 'cursor-not-allowed bg-gray-400'
+              : 'cursor-pointer bg-blue-400'
+          "
+        >
+          Submit
+        </button>
+        <div class="text-red-500 p-3 mt-4">{{ errorMessage }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -45,6 +62,7 @@ useHead({
   title: "create",
 });
 
+const user = useSupabaseUser();
 const { makes } = useCars();
 
 const info = useState("adInfo", () => {
@@ -58,34 +76,34 @@ const info = useState("adInfo", () => {
     features: "",
     seats: "",
     description: "",
-    image: null,
+    url: null,
   };
 });
 
 const inputs = [
   {
     id: 1,
-    title: "Make *",
-    name: "make",
-    placeholder: "Honda",
-  },
-  {
-    id: 2,
     title: "Year *",
     name: "year",
     placeholder: "2022",
   },
   {
-    id: 3,
+    id: 2,
     title: "City *",
     name: "city",
     placeholder: "New York",
   },
   {
+    id: 3,
+    title: "Price *",
+    name: "price",
+    placeholder: "10000",
+  },
+  {
     id: 4,
     title: "Features *",
-    name: "featuers",
-    placeholder: "No Accidents",
+    name: "features",
+    placeholder: "No Accidents, New Car",
   },
   {
     id: 5,
@@ -107,7 +125,42 @@ const inputs = [
   },
 ];
 
+const errorMessage = ref("");
+
+const isSubmitDisabled = computed(() => {
+  for (let key in info.value) {
+    if (!info.value[key]) return true;
+  }
+  return false;
+});
+
 const onChangeInput = (data, name) => {
   info.value[name] = data;
+};
+
+const handleSubmit = async () => {
+  const body = {
+    ...info.value,
+    city: info.value.city.toLowerCase(),
+    features: info.value.features.split(", "),
+    miles: +info.value.miles,
+    year: +info.value.year,
+    price: +info.value.price,
+    numberOfSeats: +info.value.seats,
+    name: `${info.value.make} ${info.value.model}`,
+    listerId: user.value.id,
+  };
+
+  delete body.seats;
+
+  try {
+    await $fetch("/api/car/listings", {
+      method: "post",
+      body,
+    });
+    navigateTo("/profile/listings");
+  } catch (error) {
+    errorMessage.value = error.statusMessage;
+  }
 };
 </script>

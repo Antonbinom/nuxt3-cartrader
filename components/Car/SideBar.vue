@@ -2,12 +2,15 @@
   <div class="shadow border w-64 mr-10 z-30 h-[190px] min-w-fit">
     <div class="p-5 flex justify-between relative cursor-pointer border-b">
       <h3>Location</h3>
-      <h3 @click="openModal('location')" class="text-blue-400 capitalize ml-2">
+      <h3
+        @click="toggleModal('location')"
+        class="text-blue-400 capitalize ml-2"
+      >
         {{ route.params.city }}
       </h3>
       <div
         v-if="modal.location"
-        class="absolute border shadow left-56 p-5 top-1 -m-1 bg-white"
+        class="absolute border shadow left-56 p-5 top-1 -m-1 bg-white z-50"
       >
         <input type="text" class="border p-1 rounded" v-model="city" />
         <button
@@ -21,12 +24,12 @@
 
     <div class="p-5 flex justify-between relative cursor-pointer border-b">
       <h3>Make</h3>
-      <h3 @click="openModal('make')" class="text-blue-400 capitalize ml-2">
+      <h3 @click="toggleModal('make')" class="text-blue-400 capitalize ml-2">
         {{ route.params.make || route.query.make || "Any" }}
       </h3>
       <div
         v-if="modal.make"
-        class="absolute border shadow left-56 p-5 top-1 -m-1 w-[600px] flex justify-between flex-wrap bg-white"
+        class="absolute border shadow left-56 p-5 z-50 top-1 -m-1 w-[600px] flex justify-between flex-wrap bg-white"
       >
         <h4
           v-for="make in makes"
@@ -41,12 +44,12 @@
 
     <div class="p-5 flex justify-between relative cursor-pointer border-b">
       <h3>Price</h3>
-      <h3 @click="openModal('price')" class="text-blue-400 capitalize ml-2">
+      <h3 @click="toggleModal('price')" class="text-blue-400 capitalize ml-2">
         {{ priceRangeText }}
       </h3>
       <div
         v-if="modal.price"
-        class="absolute border shadow left-65 p-5 top-1 -m-1 bg-white"
+        class="absolute border shadow left-65 p-5 top-1 -m-1 bg-white z-50"
       >
         <input
           class="border p-1 rounded mb-1"
@@ -121,6 +124,10 @@ const openModal = (key) => {
 
 const closeModal = (key) => {
   modal.value[key] = false;
+};
+
+const toggleModal = (key) => {
+  modal[key] ? closeModal(key) : openModal(key);
 };
 
 const onChangeLocation = () => {

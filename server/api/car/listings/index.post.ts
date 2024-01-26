@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 const schema = Joi.object({
   make: Joi.string().required(),
-  model: Joi.string().required(),
+  model: Joi.string(),
   year: Joi.number()
     .min(1886)
     .max(+new Date().getFullYear() + 1),
