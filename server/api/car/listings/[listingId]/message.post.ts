@@ -19,7 +19,6 @@ const prisma = new PrismaClient();
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { listingId } = event.context.params;
-  console.log("PARAMS: ", event.context.params);
 
   const { error } = await schema.validate(body);
 

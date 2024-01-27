@@ -11,7 +11,13 @@ const useUtils = () => {
     )}`;
   };
 
-  return { toTitleCase, getPageTitle };
+  const getImageStoragePath = (image: string) => {
+    const config = useRuntimeConfig();
+    const imageUrl = `${config.public.supabase.url}/storage/v1/object/public/images/${image}`;
+    return imageUrl;
+  };
+
+  return { toTitleCase, getPageTitle, getImageStoragePath };
 };
 
 export default useUtils;

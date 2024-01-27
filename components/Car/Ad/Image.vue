@@ -39,7 +39,7 @@ const onImageUpload = (event) => {
     image.value.image = input.files[0];
     reader.readAsDataURL(input.files[0]);
 
-    emits("changeInput", input.files[0].name, "url");
+    emits("changeInput", input.files[0], "url");
   }
 };
 </script>

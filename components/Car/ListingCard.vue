@@ -1,7 +1,11 @@
 <template>
   <div class="flex justify-between mb-4 shadow rounded overflow-hidden">
     <div class="flex">
-      <img class="w-80 h-44 mr-3" :src="listing.url" alt="" />
+      <img
+        class="w-80 h-44 mr-3"
+        :src="getImageStoragePath(listing.url)"
+        alt=""
+      />
       <div class="p-3">
         <h1 class="text-2xl">{{ listing.name }}</h1>
         <p class="text-blue-400">${{ listing.price }}</p>
@@ -24,6 +28,8 @@
 </template>
 
 <script setup>
+const { getImageStoragePath } = useUtils();
+
 const props = defineProps({
   listing: Object,
 });

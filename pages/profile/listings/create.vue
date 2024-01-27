@@ -63,6 +63,8 @@ useHead({
 });
 
 const user = useSupabaseUser();
+const supabase = useSupabaseClient();
+
 const { makes } = useCars();
 
 const info = useState("adInfo", () => {
@@ -139,6 +141,14 @@ const onChangeInput = (data, name) => {
 };
 
 const handleSubmit = async () => {
+  const fileName = Math.floor(Math.random() * 1000000000000000);
+  const { data, error } = await supabase.storage
+    .from("images")
+    .upload("public/" + fileName, info.value.url);
+
+  if (error) {
+    errorMessage.value = "Can not upload image";
+  }
   const body = {
     ...info.value,
     city: info.value.city.toLowerCase(),
@@ -149,6 +159,7 @@ const handleSubmit = async () => {
     numberOfSeats: +info.value.seats,
     name: `${info.value.make} ${info.value.model}`,
     listerId: user.value.id,
+    url: data.path,
   };
 
   delete body.seats;
@@ -161,6 +172,7 @@ const handleSubmit = async () => {
     navigateTo("/profile/listings");
   } catch (error) {
     errorMessage.value = error.statusMessage;
+    await supabase.storage.from("images").remove(data.path);
   }
 };
 </script>

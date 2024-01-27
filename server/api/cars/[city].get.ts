@@ -12,7 +12,6 @@ export default defineEventHandler(async (event) => {
     ...(minPrice && { minPrice }),
     ...(maxPrice && { maxPrice }),
   };
-  console.log(filters);
 
   const cars = await prisma.car.findMany({
     where: filters,

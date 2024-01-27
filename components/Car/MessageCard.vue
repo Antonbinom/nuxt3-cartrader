@@ -5,8 +5,14 @@
       {{ message.message }}
     </p>
     <div class="mt-4 flex items-center">
-      <p class="text-green-700 mr-10">{{ message.email }}</p>
-      <p class="text-blue-500">{{ message.phone }}</p>
+      <a
+        :href="`mailto:${message.email}`"
+        class="text-green-700 mr-10 cursor-pointer"
+        >{{ message.email }}</a
+      >
+      <a :href="`tel:${message.phone}`" class="text-blue-500 cursor-pointer">{{
+        message.phone
+      }}</a>
     </div>
   </div>
 </template>
